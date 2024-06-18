@@ -10,6 +10,10 @@ services:
       C_FORCE_ROOT: "true"
     ports:
       - "5000:80"
+    secrets:
+      - certificate_cert
+      - certificate_key
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80", "--ssl-keyfile", "/run/secrets/certificate_key", "--ssl-keyfile-password", "123456", "--ssl-certfile", "/run/secrets/certificate_cert"]
     depends_on:
       - redis_server
   worker:
@@ -31,3 +35,9 @@ services:
       - "5555:5555"
     depends_on:
       - redis_server
+
+secrets:
+  certificate_cert:
+    file: ./certificate/cert.pem
+  certificate_key:
+    file: ./certificate/key.pem
